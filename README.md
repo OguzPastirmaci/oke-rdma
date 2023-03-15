@@ -7,6 +7,13 @@ sudo apt install cuda-drivers-fabricmanager-515
 sudo service nvidia-fabricmanager start
 ```
 
+### Helm Repos
+```sh
+helm repo add mellanox https://mellanox.github.io/network-operator
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+helm repo update
+```
+
 ### Network Operator
 ```sh
 helm install --wait \
