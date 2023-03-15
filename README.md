@@ -1,4 +1,4 @@
-# oke-rdma
+# OKE with RDMA VFs
 
 ### GPU Driver
 ```sh
