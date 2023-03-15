@@ -15,6 +15,11 @@ helm install --wait \
   network-operator mellanox/network-operator
 ```
 
+### SR-IOV CNI
+```sh
+kubectl apply -f https://raw.githubusercontent.com/OguzPastirmaci/oke-rdma/main/sriov-cni-daemonset.yaml?token=GHSAT0AAAAAABX5O5NFVDFW5TDQWWFUBWFOZASFNSQ
+```
+
 ### GPU Operator
 ```sh
 helm install --wait --generate-name \                                                                         
