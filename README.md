@@ -17,7 +17,7 @@ helm install --wait \
 
 ### SR-IOV CNI
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/OguzPastirmaci/oke-rdma/main/sriov-cni-daemonset.yaml?token=GHSAT0AAAAAABX5O5NFVDFW5TDQWWFUBWFOZASFNSQ
+kubectl apply -f https://raw.githubusercontent.com/OguzPastirmaci/oke-rdma/main/sriov-cni-daemonset.yaml
 ```
 
 ### GPU Operator
