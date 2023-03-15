@@ -27,6 +27,11 @@ helm install --wait \
 kubectl apply -f sriov-cni-daemonset.yaml
 ```
 
+### Network Attachment Definition
+```sh
+kubectl apply -f network-attachment-definition.yaml
+```
+
 ### GPU Operator
 ```sh
 helm install --wait --generate-name \                                                                         
