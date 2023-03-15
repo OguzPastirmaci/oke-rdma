@@ -1,0 +1,27 @@
+deployCR: true
+
+psp:
+  enabled: false
+
+ofedDriver:
+  deploy: false
+
+nvPeerDriver:
+  deploy: false
+
+nfd:
+  enabled: true
+
+rdmaSharedDevicePlugin:
+  deploy: false
+
+sriovNetworkOperator:
+  enabled: false
+
+sriovDevicePlugin:
+  deploy: true
+  resources:
+      - name: rdma_sriov
+        drivers: [mlx5_core]
+        devices: [101a]
+        isRdma: true
