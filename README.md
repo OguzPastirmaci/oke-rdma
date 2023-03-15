@@ -7,6 +7,14 @@ sudo apt install cuda-drivers-fabricmanager-515
 sudo service nvidia-fabricmanager start
 ```
 
+### Network Operator
+```sh
+helm install --wait \
+  -n network-operator --create-namespace \
+  -f network-operator-values.yaml \
+  network-operator mellanox/network-operator
+```
+
 ### GPU Operator
 ```sh
 helm install --wait --generate-name \                                                                         
