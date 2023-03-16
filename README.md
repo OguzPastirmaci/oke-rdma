@@ -1,5 +1,13 @@
 # OKE with RDMA VFs
 
+### Change MACAddressPolicy and reboot the hosts
+
+```sh
+/usr/lib/systemd/network/99-default.link
+
+MACAddressPolicy=persistent
+```
+
 ### Install GPU Driver to the hosts
 ```sh
 sudo apt install nvidia-headless-515-server -y
