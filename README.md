@@ -5,7 +5,7 @@
 ```sh
 /usr/lib/systemd/network/99-default.link
 
-MACAddressPolicy=persistent
+MACAddressPolicy=none
 ```
 
 ### Install GPU Driver to the hosts
