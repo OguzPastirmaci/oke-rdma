@@ -5,6 +5,7 @@
 sudo apt install nvidia-headless-515-server -y
 sudo apt install cuda-drivers-fabricmanager-515 -y
 sudo service nvidia-fabricmanager start
+sudo systemctl enable nvidia-fabricmanager
 ```
 
 ### Add Helm repos
