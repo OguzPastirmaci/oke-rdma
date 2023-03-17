@@ -33,6 +33,9 @@ helm install --wait \
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
 
 ### Deploy SR-IOV CNI
+
+Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one in this repo. You will get a permission issue if you use the official one.
+
 ```sh
 kubectl apply -f sriov-cni-daemonset.yaml
 ```
