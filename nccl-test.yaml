@@ -70,9 +70,9 @@ spec:
                 memory: 1500Gi
                 nvidia.com/gpu: 8
                 nvidia.com/rdma_sriov: 16
-                hugepages-2Mi: 1Gi
+                #hugepages-2Mi: 1Gi
               limits:
                 nvidia.com/gpu: 8
                 nvidia.com/rdma_sriov: 16
-                hugepages-2Mi: 1Gi
+                #hugepages-2Mi: 1Gi
                 
