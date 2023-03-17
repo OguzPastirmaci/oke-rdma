@@ -350,7 +350,6 @@ spec:
               args: ["mpirun \
                     --bind-to numa \
                     --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
-                    -x UCX_TLS=tcp \
                     -x HCOLL_ENABLE_MCAST_ALL=0 \
                     -x coll_hcoll_enable=0 \
                     -x NCCL_DEBUG=WARN \
