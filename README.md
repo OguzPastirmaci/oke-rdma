@@ -4,12 +4,16 @@
 Use the Terraform template [oke.tf](https://github.com/OguzPastirmaci/oke-rdma/blob/main/oke.tf) to deploy a new cluster in KIX. It will have a regular node pool, and a CN pool with 2 nodes.
 
 ### Change MACAddressPolicy and reboot the hosts
+The TF template will also deploy a bastion. Once all GPU nodes are up, use the bastion to SSH into the CN nodes and change `MACAddressPolicy=persistent` to `MACAddressPolicy=none` in `/usr/lib/systemd/network/99-default.link`, and reboot the nodes.
 
-```sh
-/usr/lib/systemd/network/99-default.link
+This is a fix needed until we have a new image. If you don't change it, VFs will get duplicate MAC addresses.
 
-MACAddressPolicy=none
-```
+### Configure the VF interfaces
+Once the GPU nodes are back, you will see VF interfaces named `rdma0v0..rdma15v0`.
+
+`v0` ones are the VF interfaces. Create new IP configs for them in `/etc/network/interfaces.d` (pick some IPs that are not duplicate), and `ifup` the interfaces.
+
+You should see IPs assigned to the VF interfaces now. Try pingning them from the other GPU node to make sure they work. It takes about 10 minutes for new VFs to authenticate after the previous step, and the reboot should give them enought time.
 
 ### Install Fabric Manager to the hosts
 ```sh
