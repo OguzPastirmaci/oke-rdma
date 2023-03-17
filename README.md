@@ -8,10 +8,8 @@
 MACAddressPolicy=none
 ```
 
-### Install GPU Driver to the hosts
+### Install Fabric Manager to the hosts
 ```sh
-sudo apt install nvidia-headless-515-server -y
-sudo apt install cuda-drivers-fabricmanager-515 -y
 sudo service nvidia-fabricmanager start
 sudo systemctl enable nvidia-fabricmanager
 ```
