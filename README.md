@@ -49,8 +49,9 @@ kubectl apply -f network-attachment-definition.yaml
 ```sh
 helm install --wait \
 -n gpu-operator --create-namespace \
--f gpu-operator-values.yaml \
-gpu-operator nvidia/gpu-operator --version v22.9.2
+gpu-operator nvidia/gpu-operator --version v22.9.2 \
+--set driver.enabled=false --set nfd.enabled=false --set operator.defaultRuntime=crio --set driver.version="515.86.01" \
+--set driver.rdma.enabled=true --set driver.rdma.useHostMofed=true
 ```
 
 Wait until all network operator pods are running with `kubectl get pods -n gpu-operator`.
