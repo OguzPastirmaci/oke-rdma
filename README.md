@@ -10,7 +10,7 @@ MACAddressPolicy=none
 
 ### Install Fabric Manager to the hosts
 ```sh
-sudo service nvidia-fabricmanager start
+sudo apt install nvidia-fabricmanager-515 -y
 sudo systemctl --now enable nvidia-fabricmanager
 ```
 
