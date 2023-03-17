@@ -15,14 +15,14 @@ Once the GPU nodes are back, you will see VF interfaces named `rdma0v0..rdma15v0
 
 You should see IPs assigned to the VF interfaces now. Try pinging them from the other GPU node to make sure they work. It takes about 10 minutes for new VFs to authenticate after the previous step, and the reboot should give them enought time.
 
-### Add Helm repos for Network Operator and GPU Operator
+### 4 - Add Helm repos for Network Operator and GPU Operator
 ```sh
 helm repo add mellanox https://mellanox.github.io/network-operator
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 helm repo update
 ```
 
-### Deploy Network Operator
+### 5 - Deploy Network Operator
 ```sh
 helm install --wait \
   -n network-operator --create-namespace \
@@ -32,7 +32,7 @@ helm install --wait \
 
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
 
-### Deploy SR-IOV CNI
+### 6 - Deploy SR-IOV CNI
 
 Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one in this repo. You will get a permission issue if you use the official one.
 
@@ -40,12 +40,12 @@ Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the on
 kubectl apply -f sriov-cni-daemonset.yaml
 ```
 
-### Create Network Attachment Definition
+### 7 - Create Network Attachment Definition
 ```sh
 kubectl apply -f network-attachment-definition.yaml
 ```
 
-### Deploy GPU Operator
+### 8 - Deploy GPU Operator
 ```sh
 helm install --wait \
 -n gpu-operator --create-namespace \
@@ -62,7 +62,13 @@ sudo apt install nvidia-fabricmanager-515 -y
 sudo systemctl --now enable nvidia-fabricmanager
 ```
 
-### Deploy MPI Operator
+### 9 - Deploy MPI Operator
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/master/deploy/v2beta1/mpi-operator.yaml
 ```
+
+### 10 - Run NCCL test
+
+Run the test with `kubectl apply -f nccl-test.yaml`.
+
+
