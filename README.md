@@ -149,53 +149,7 @@ helm repo add mellanox https://mellanox.github.io/network-operator
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 helm repo update
 ```
-
-### 9 - Deploy Network Operator
-
-`network-operator-values.yaml`.
-
-```yaml
-deployCR: true
-
-psp:
-  enabled: false
-
-ofedDriver:
-  deploy: false
-
-nvPeerDriver:
-  deploy: false
-
-nfd:
-  enabled: true
-
-rdmaSharedDevicePlugin:
-  deploy: false
-
-sriovNetworkOperator:
-  enabled: false
-
-sriovDevicePlugin:
-  deploy: true
-  resources:
-      - name: rdma_sriov
-        drivers: [mlx5_core]
-        devices: [101a]
-        isRdma: true
-```      
-
-
-
-```sh
-helm install --wait \
-  -n network-operator --create-namespace \
-  -f network-operator-values.yaml \
-  network-operator mellanox/network-operator
-```
-
-Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
-
-### 10 - Deploy SR-IOV CNI
+### 9 - Deploy SR-IOV CNI
 
 Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one here. You will get a permission issue if you use the official one.
 
@@ -258,6 +212,52 @@ spec:
 ```sh
 kubectl apply -f sriov-cni-daemonset.yaml
 ```
+
+### 10 - Deploy Network Operator
+
+`network-operator-values.yaml`.
+
+```yaml
+deployCR: true
+
+psp:
+  enabled: false
+
+ofedDriver:
+  deploy: false
+
+nvPeerDriver:
+  deploy: false
+
+nfd:
+  enabled: true
+
+rdmaSharedDevicePlugin:
+  deploy: false
+
+sriovNetworkOperator:
+  enabled: false
+
+sriovDevicePlugin:
+  deploy: true
+  resources:
+      - name: rdma_sriov
+        drivers: [mlx5_core]
+        devices: [101a]
+        isRdma: true
+```      
+
+
+
+```sh
+helm install --wait \
+  -n network-operator --create-namespace \
+  -f network-operator-values.yaml \
+  network-operator mellanox/network-operator
+```
+
+Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
+
 
 ### 11 - Create Network Attachment Definition
 
