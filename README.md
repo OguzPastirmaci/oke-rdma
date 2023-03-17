@@ -5,6 +5,88 @@ Below instructions are based on the image `oke-ubuntu-20.04-x86_64-kix-202303110
 ### 1 - Deploy an OKE cluster with a CN pool
 Use the Terraform template [oke.tf](https://github.com/OguzPastirmaci/oke-rdma/blob/main/oke.tf) to deploy a new cluster in KIX. It will have a regular node pool, and a CN pool with 2 nodes.
 
+```sh
+variable "config_file_profile" { type = string }
+variable "home_region" { type = string }
+variable "region" { type = string }
+variable "tenancy_id" { type = string }
+variable "compartment_id" { type = string }
+variable "ssh_public_key_path" { type = string }
+
+module "oke" {
+  source = "github.com/oracle-terraform-modules/terraform-oci-oke.git?ref=5.x-dev&depth=1"
+
+  # Provider
+  providers           = { oci.home = oci.home }
+  config_file_profile = var.config_file_profile
+  home_region         = var.home_region
+  region              = var.region
+  tenancy_id          = var.tenancy_id
+  compartment_id      = var.compartment_id
+  ssh_public_key_path = var.ssh_public_key_path
+
+  # Resource creation
+  assign_dns           = true  # *true/false
+  create_vcn           = true  # *true/false
+  create_bastion       = true  # *true/false
+  create_cluster       = true  # *true/false
+  create_operator      = false # *true/false
+  create_iam_resources = false # true/*false
+  use_defined_tags     = true  # true/*false
+
+  allow_worker_ssh_access     = true
+  control_plane_allowed_cidrs = ["0.0.0.0/0"]
+
+  # Worker pool defaults
+  worker_image_id         = "ocid1.image.oc1.ap-osaka-1.aaaaaaaaykfhzcj5uowhvwrdewdmzqxwq7k53f3ac2wvlb2tpaiujgbcesla"
+  worker_image_os         = "Oracle Linux" # Ignored when worker_image_type = "custom"
+  worker_image_os_version = "8"            # Ignored when worker_image_type = "custom"
+  worker_image_type       = "custom"       # Must be "custom" when using an image OCID
+  worker_shape            = { shape = "VM.Standard.E4.Flex", ocpus = 2, memory = 16, boot_volume_size = 50 }
+
+  worker_pools = {
+    np0 = {
+      description = "OKE-managed Node Pool", enabled = true,
+      mode        = "node-pool", size = 1,
+    }
+    cn0 = {
+      description = "Self-managed Cluster Network", enabled = true,
+      mode        = "cluster-network", size = 2, shape = "BM.GPU.B4.8", placement_ads = [1],
+      secondary_vnics = {
+        # storage0 = { nic_index = 0 } # Pending instance config limits increase for hpc_limited_availability
+        storage1 = { nic_index = 1 }
+      }
+    }
+  }
+}
+
+terraform {
+  required_providers {
+    oci = {
+      configuration_aliases = [oci.home]
+      source                = "oracle/oci"
+      version               = ">= 4.67.3"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "oci" {
+  config_file_profile = var.config_file_profile
+  region              = var.region
+  tenancy_ocid        = var.tenancy_id
+}
+
+provider "oci" {
+  alias               = "home"
+  config_file_profile = var.config_file_profile
+  region              = var.home_region
+  tenancy_ocid        = var.tenancy_id
+}
+```
+
+
 ### 2 - Wait until you see all nodes in the cluster
 
 ```sh
@@ -69,6 +151,41 @@ helm repo update
 ```
 
 ### 9 - Deploy Network Operator
+
+`network-operator-values.yaml`.
+
+```yaml
+deployCR: true
+
+psp:
+  enabled: false
+
+ofedDriver:
+  deploy: false
+
+nvPeerDriver:
+  deploy: false
+
+nfd:
+  enabled: true
+
+rdmaSharedDevicePlugin:
+  deploy: false
+
+sriovNetworkOperator:
+  enabled: false
+
+sriovDevicePlugin:
+  deploy: true
+  resources:
+      - name: rdma_sriov
+        drivers: [mlx5_core]
+        devices: [101a]
+        isRdma: true
+```      
+
+
+
 ```sh
 helm install --wait \
   -n network-operator --create-namespace \
@@ -80,13 +197,102 @@ Wait until all network operator pods are running with `kubectl get pods -n netwo
 
 ### 10 - Deploy SR-IOV CNI
 
-Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one in this repo. You will get a permission issue if you use the official one.
+Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one here. You will get a permission issue if you use the official one.
+
+`sriov-cni-daemonset.yaml`.
+
+```yaml
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kube-sriov-cni-ds-amd64
+  namespace: kube-system
+  labels:
+    tier: node
+    app: sriov-cni
+spec:
+  selector:
+    matchLabels:
+      name: sriov-cni
+  template:
+    metadata:
+      labels:
+        name: sriov-cni
+        tier: node
+        app: sriov-cni
+    spec:
+      nodeSelector:
+        kubernetes.io/arch: amd64
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: kube-sriov-cni
+        image: ghcr.io/k8snetworkplumbingwg/sriov-cni
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: true
+          privileged: true
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+              - ALL
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "50Mi"
+        volumeMounts:
+        - name: cnibin
+          mountPath: /host/opt/cni/bin
+      volumes:
+        - name: cnibin
+          hostPath:
+            path: /opt/cni/bin
+```            
 
 ```sh
 kubectl apply -f sriov-cni-daemonset.yaml
 ```
 
 ### 11 - Create Network Attachment Definition
+
+`network-attachment-definition.yaml`
+
+```yaml
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: sriov-net
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: nvidia.com/rdma_sriov
+spec:
+  config: |-
+    {
+      "cniVersion": "0.3.1",
+      "name": "sriov-rdma-net",
+      "plugins": [
+        {
+          "type": "sriov",
+          "ipam": {
+            "type": "whereabouts",
+            "datastore": "kubernetes",
+            "kubernetes": { "kubeconfig": "/etc/cni/net.d/whereabouts.d/whereabouts.kubeconfig" },
+            "range": "192.168.0.0/16",
+            "exclude": [],
+            "log_file": "/var/log/whereabouts.log",
+            "log_level": "info"
+          }
+        },
+        { "type": "rdma" }
+      ]
+    }
+```    
+
 ```sh
 kubectl apply -f network-attachment-definition.yaml
 ```
@@ -110,6 +316,81 @@ kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/master/
 ### 14 - Run NCCL test
 
 Run the test with `kubectl apply -f nccl-test.yaml`.
+
+`nccl-test.yaml`
+
+```yaml
+apiVersion: kubeflow.org/v2beta1
+kind: MPIJob
+metadata:
+  name: nccl-test-a100
+spec:
+  slotsPerWorker: 8
+  runPolicy:
+    cleanPodPolicy: Running
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+          spec:
+            #initContainers:
+            #- image: oguzpastirmaci/nccl-tests:cuda
+            #  name: init
+            #  command: ["sh", "-c", "sleep 5"]
+            containers:
+            - image: oguzpastirmaci/nccl-tests:cuda
+              name: nccl
+              env:
+              - name: OMPI_ALLOW_RUN_AS_ROOT
+                value: "1"
+              - name: OMPI_ALLOW_RUN_AS_ROOT_CONFIRM
+                value: "1"
+              #command: ['sleep', '86400']
+              command: ["/bin/bash", "-c"]
+              args: ["mpirun \
+                    --bind-to numa \
+                    --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
+                    -x UCX_TLS=tcp \
+                    -x HCOLL_ENABLE_MCAST_ALL=0 \
+                    -x coll_hcoll_enable=0 \
+                    -x NCCL_DEBUG=WARN \
+                    -x NCCL_IB_SL=0 \
+                    -x NCCL_IB_TC=41 \
+                    -x NCCL_IB_QPS_PER_CONNECTION=4 \
+                    -x NCCL_IB_GID_INDEX=3 \
+                    -x NCCL_IB_HCA=mlx5 \
+                    /opt/nccl_tests/build/all_reduce_perf -b1G -e10G -i$((1024*1024*1024*9)) -g 1
+                    "]
+
+              resources:
+                requests:
+                  cpu: 2
+                  memory: 128Mi
+    Worker:
+      replicas: 2
+      template:
+        metadata:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net
+        spec:
+          containers:
+          - image: oguzpastirmaci/nccl-tests:cuda
+            #securityContext:
+              #capabilities:
+                #add: [ "IPC_LOCK" ]
+            name: nccl
+            resources:
+              requests:
+                cpu: 100
+                memory: 1500Gi
+                nvidia.com/gpu: 8
+                nvidia.com/rdma_sriov: 16
+                #hugepages-2Mi: 1Gi
+              limits:
+                nvidia.com/gpu: 8
+                nvidia.com/rdma_sriov: 16
+                #hugepages-2Mi: 1Gi
+```                
 
 The initial pull of the container will take long. Wait until you see all pods' status as `Running`.
 
