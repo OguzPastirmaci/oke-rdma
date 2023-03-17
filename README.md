@@ -85,4 +85,12 @@ kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/master/
 
 Run the test with `kubectl apply -f nccl-test.yaml`.
 
+The initial pull of the container will take long. Wait until you see all pods' status as `Running`.
+
+Run `kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)` to get the logs from the launcher.
+
+You might see an error message saying something similar to "mpirun couldn't find the host", that's expected. Wait for 30 more seconds and run the previous command again. You will see the NCCL test results output.
+
+
+
 
