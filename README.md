@@ -13,7 +13,7 @@ Once the GPU nodes are back, you will see VF interfaces named `rdma0v0..rdma15v0
 
 `v0` ones are the VF interfaces. Create new IP configs for them in `/etc/network/interfaces.d` (pick some IPs that are not duplicate), and `ifup` the interfaces.
 
-You should see IPs assigned to the VF interfaces now. Try pingning them from the other GPU node to make sure they work. It takes about 10 minutes for new VFs to authenticate after the previous step, and the reboot should give them enought time.
+You should see IPs assigned to the VF interfaces now. Try pinging them from the other GPU node to make sure they work. It takes about 10 minutes for new VFs to authenticate after the previous step, and the reboot should give them enought time.
 
 ### Install Fabric Manager to the hosts
 ```sh
