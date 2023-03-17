@@ -11,7 +11,7 @@ MACAddressPolicy=none
 ### Install Fabric Manager to the hosts
 ```sh
 sudo service nvidia-fabricmanager start
-sudo systemctl enable nvidia-fabricmanager
+sudo systemctl --now enable nvidia-fabricmanager
 ```
 
 ### Add Helm repos
