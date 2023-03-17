@@ -6,7 +6,7 @@ Use the Terraform template [oke.tf](https://github.com/OguzPastirmaci/oke-rdma/b
 ### 2 - Install the GPU driver and Fabric Manager on the GPU nodes
 Needs more info: GPU Operator has an option to deploy the drivers as a container, but NCCL test results were drastically worse with the containerized driver option compared to GPU drivers installed on the host (179 GB/s vs 40 GB/s).
 
-Install the drivers and reboot the nodes.
+Install the drivers but do NOT reboot the nodes yet. You'll reboot them in the next step.
 
 ```sh
 sudo apt-get install linux-headers-$(uname -r)
