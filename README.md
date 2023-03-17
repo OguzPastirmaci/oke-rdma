@@ -14,7 +14,7 @@ sudo apt install nvidia-fabricmanager-515 -y
 sudo systemctl --now enable nvidia-fabricmanager
 ```
 
-### Add Helm repos
+### Add Helm repos for Network Operator and GPU Operator
 ```sh
 helm repo add mellanox https://mellanox.github.io/network-operator
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
@@ -28,6 +28,8 @@ helm install --wait \
   -f network-operator-values.yaml \
   network-operator mellanox/network-operator
 ```
+
+Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
 
 ### Deploy SR-IOV CNI
 ```sh
@@ -46,6 +48,8 @@ helm install --wait \
 -f gpu-operator-values.yaml \
 gpu-operator nvidia/gpu-operator --version v22.9.2
 ```
+
+Wait until all network operator pods are running with `kubectl get pods -n gpu-operator`.
 
 ### Deploy MPI Operator
 ```sh
