@@ -4,7 +4,7 @@
 Use the Terraform template [oke.tf](https://github.com/OguzPastirmaci/oke-rdma/blob/main/oke.tf) to deploy a new cluster in KIX. It will have a regular node pool, and a CN pool with 2 nodes.
 
 ### 2 - Install the GPU driver and Fabric Manager on the GPU nodes
-Needs more info: GPU Operator has an option to deploy the drivers as a container, but NCCL test results were drastically worse with the containerized driver option compared to GPU drivers installed on the host (179 GB/s vs 40 GB/s).
+Need to investigate: GPU Operator has an option to deploy the drivers as a container, but NCCL test results were drastically worse with the containerized driver option compared to GPU drivers installed on the host (179 GB/s vs 40 GB/s).
 
 Install the drivers but do NOT reboot the nodes yet. You'll reboot them in the next step.
 
