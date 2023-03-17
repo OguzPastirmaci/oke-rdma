@@ -26,17 +26,10 @@ spec:
               #command: ['sleep', '86400']
               command: ["/bin/bash", "-c"]
               args: ["mpirun \
-                    --bind-to none \
-                    -x UCX_TLS=tcp \
-                    -x UCX_NET_DEVICES=eth0 \
+                    --bind-to numa \
                     --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
-                    --mca coll ^hcoll \
-                    -x RX_QUEUE_LEN=8192 \
-                    -x IB_RX_QUEUE_LEN=8192 \
-                    -x NCCL_IB_TIMEOUT=16 \
                     -x UCX_TLS=tcp \
                     -x HCOLL_ENABLE_MCAST_ALL=0 \
-                    -x NCCL_IGNORE_CPU_AFFINITY=1 \
                     -x coll_hcoll_enable=0 \
                     -x NCCL_DEBUG=WARN \
                     -x NCCL_IB_SL=0 \
