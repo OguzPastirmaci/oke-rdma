@@ -45,8 +45,8 @@ kubectl apply -f network-attachment-definition.yaml
 ```sh
 helm install --wait \
 -n gpu-operator --create-namespace \
-gpu-operator nvidia/gpu-operator \
---set driver.enabled=false --set nfd.enabled=false --set operator.defaultRuntime=crio
+-f gpu-operator-values.yaml \
+gpu-operator nvidia/gpu-operator --version v22.9.2
 ```
 
 ### Deploy MPI Operator
