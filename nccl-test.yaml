@@ -1,9 +1,7 @@
 apiVersion: kubeflow.org/v2beta1
 kind: MPIJob
 metadata:
-  name: nccl-test
-  #annotations:
-   # k8s.v1.cni.cncf.io/networks: ipvlan-def-wa
+  name: nccl-test-a100
 spec:
   slotsPerWorker: 8
   runPolicy:
@@ -12,58 +10,69 @@ spec:
     Launcher:
       replicas: 1
       template:
-         spec:
-           #initContainers:
-           #- image: oguzpastirmaci/nccl-tests:ssh_v1
-           #  name: init
-           #  command: ["sh", "-c", "sleep 5"]
-           #  env:
-           #  - name: NCCL_IB_HCA
-           #    value: "=mlx5_0,mlx5_2,mlx5_6,mlx5_8,mlx5_10,mlx5_12,mlx5_14,mlx5_16,mlx5_1,mlx5_3,mlx5_7,mlx5_9,mlx5_11,mlx5_13,mlx5_15,mlx5_17"
-           #dnsPolicy: ClusterFirstWithHostNet
-           containers:
-           - image: oguzpastirmaci/nccl-tests:ssh_v1
-             name: nccl-test
-            # env:
-            # - name: NCCL_IB_HCA
-            #   value: =mlx5_0,mlx5_2,mlx5_6,mlx5_8,mlx5_10,mlx5_12,mlx5_14,mlx5_16,mlx5_1,mlx5_3,mlx5_7,mlx5_9,mlx5_11,mlx5_13,mlx5_15,mlx5_17
-             command: ["/bin/bash", "-c"]
-             args: ["mpirun \
-                    --allow-run-as-root \
-                    --mca plm_rsh_args '-p 2222' \
+          spec:
+            #initContainers:
+            #- image: oguzpastirmaci/nccl-tests:cuda
+            #  name: init
+            #  command: ["sh", "-c", "sleep 5"]
+            containers:
+            - image: oguzpastirmaci/nccl-tests:cuda
+              name: nccl
+              env:
+              - name: OMPI_ALLOW_RUN_AS_ROOT
+                value: "1"
+              - name: OMPI_ALLOW_RUN_AS_ROOT_CONFIRM
+                value: "1"
+              #command: ['sleep', '86400']
+              command: ["/bin/bash", "-c"]
+              args: ["mpirun \
+                    --bind-to none \
+                    -x UCX_TLS=tcp \
+                    -x UCX_NET_DEVICES=eth0 \
+                    --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
                     --mca coll ^hcoll \
-                    --bind-to numa \
+                    -x RX_QUEUE_LEN=8192 \
+                    -x IB_RX_QUEUE_LEN=8192 \
+                    -x NCCL_IB_TIMEOUT=16 \
+                    -x UCX_TLS=tcp \
+                    -x HCOLL_ENABLE_MCAST_ALL=0 \
+                    -x NCCL_IGNORE_CPU_AFFINITY=1 \
+                    -x coll_hcoll_enable=0 \
+                    -x NCCL_DEBUG=WARN \
                     -x NCCL_IB_SL=0 \
                     -x NCCL_IB_TC=41 \
                     -x NCCL_IB_QPS_PER_CONNECTION=4 \
-                    -x UCX_TLS=tcp \
-                    -x UCX_NET_DEVICES=mlx5_4:1 \
-                    -x HCOLL_ENABLE_MCAST_ALL=0 \
-                    -x coll_hcoll_enable=0 \
                     -x NCCL_IB_GID_INDEX=3 \
-                    -np 16 -N 8 \
-                    -x LD_LIBRARY_PATH \
-                    -x NCCL_DEBUG=WARN \
-                    -x NCCL_IB_HCA='=mlx5_0,mlx5_2,mlx5_6,mlx5_8,mlx5_10,mlx5_12,mlx5_14,mlx5_16,mlx5_1,mlx5_3,mlx5_7,mlx5_9,mlx5_11,mlx5_13,mlx5_15,mlx5_17' \
-                    /home/mpiuser/nccl-tests/build/all_reduce_perf -b1G -e10G -i$((1024*1024*1024*9))
+                    -x NCCL_IB_HCA=mlx5 \
+                    /opt/nccl_tests/build/all_reduce_perf -b1G -e10G -i$((1024*1024*1024*9)) -g 1
                     "]
 
+              resources:
+                requests:
+                  cpu: 2
+                  memory: 128Mi
     Worker:
       replicas: 2
       template:
+        metadata:
+          annotations:
+            k8s.v1.cni.cncf.io/networks: sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net
         spec:
-          hostNetwork: true
-          dnsPolicy: ClusterFirstWithHostNet
           containers:
-          - image: oguzpastirmaci/nccl-tests:ssh_v1
-            name: nccl-test
-            securityContext:
-              capabilities:
-                add: [ "IPC_LOCK" ]
+          - image: oguzpastirmaci/nccl-tests:cuda
+            #securityContext:
+              #capabilities:
+                #add: [ "IPC_LOCK" ]
+            name: nccl
             resources:
               requests:
+                cpu: 100
+                memory: 1500Gi
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 1
+                nvidia.com/rdma_sriov: 16
+                hugepages-2Mi: 1Gi
               limits:
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 1
+                nvidia.com/rdma_sriov: 16
+                hugepages-2Mi: 1Gi
+                
