@@ -104,7 +104,7 @@ NAME           STATUS     ROLES    AGE     VERSION
 We will reboot the GPU nodes in the next steps, drain them before rebooting.
 
 ```sh
-kubectl get nodes -l nvidia.com/gpu.present=true | awk '{if (NR!=1) {print $1}}' | xargs -I {} kubectl drain --ignore-daemonsets {}
+kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl drain --ignore-daemonsets {}
 ```
 
 ### 4 - Install Fabric Manager on the GPU nodes
@@ -133,7 +133,7 @@ You should see IPs assigned to the VF interfaces now. Try pinging them from the 
 ### 7 - Uncordon the GPU nodes
 
 ```sh
-kubectl get nodes -l nvidia.com/gpu.present=true | awk '{if (NR!=1) {print $1}}' | xargs -I {} kubectl uncordon {}
+kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl uncordon {}
 ```
 
 ### 8 - Add Helm repos for Network Operator and GPU Operator
