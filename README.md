@@ -107,19 +107,12 @@ We will reboot the GPU nodes in the next steps, drain them before rebooting.
 kubectl get nodes -l nvidia.com/gpu.present=true | awk '{if (NR!=1) {print $1}}' | xargs -I {} kubectl drain --ignore-daemonsets {}
 ```
 
-### 4 - Install the GPU driver and Fabric Manager on the GPU nodes
-Need to investigate: GPU Operator has an option to deploy the drivers as a container, but NCCL test results were drastically worse with the containerized driver option compared to GPU drivers installed on the host (179 GB/s vs 40 GB/s).
+### 4 - Install Fabric Manager on the GPU nodes
+It seems like Fabric Manager installation via GPU Operator sometimes fails ([see the issue](https://github.com/NVIDIA/gpu-operator/issues/356) in the GPU Operator repo, I had the same thing).
 
-Install the drivers but do NOT reboot the nodes yet. You'll reboot them in the next step.
+The safe path is to install Fabric Manager on the hosts.
 
 ```sh
-sudo apt-get install linux-headers-$(uname -r)
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID | sed -e 's/\.//g')
-wget https://developer.download.nvidia.com/compute/cuda/repos/$distribution/x86_64/cuda-keyring_1.0-1_all.deb
-sudo dpkg -i cuda-keyring_1.0-1_all.deb
-sudo apt-get update
-
-sudo apt-get install cuda-drivers-515=515.86.01-1 -y
 sudo apt-get install cuda-drivers-fabricmanager-515=515.86.01-1 -y
 
 sudo systemctl --now enable nvidia-fabricmanager
