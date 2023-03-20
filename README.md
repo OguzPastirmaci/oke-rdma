@@ -393,11 +393,11 @@ spec:
                 nvidia.com/rdma_sriov: 16                
 ```                
 
-The initial pull of the container will take long. Wait until you see all pods' status as `Running`.
+The initial pull of the container will take long.
 
-Run `kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)` to get the logs from the launcher.
+The init container will wait until all worker pods are running. You can check the logs of the init container by running `kubectl logs  $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name) -c node-ordering-by-rack`.
 
-You might see an error message saying "ssh: Could not resolve hostname nccl-test-a100-worker-0.nccl-test-a100-worker.default.svc: Name or service not known", that's expected. Wait for 30 more seconds and run the previous command again. You will see the NCCL test results output.
+Once the init container has finished running, you can check the results of the NCCL test by running `kubectl logs  $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)`.
 
 ```sh
 kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)
