@@ -40,7 +40,7 @@ spec:
               args: ["mpirun \
                     --bind-to numa \
                     --hostfile /node-ordering-by-rack/ordered_hostfile \
-                    --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
+                    --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0  --mca coll ^hcoll\
                     -x HCOLL_ENABLE_MCAST_ALL=0 \
                     -x coll_hcoll_enable=0 \
                     -x NCCL_IB_HCA=mlx5 \
@@ -76,4 +76,11 @@ spec:
                 nvidia.com/rdma_sriov: 16
               limits:
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16                
+                nvidia.com/rdma_sriov: 16
+            volumeMounts:
+              - mountPath: /dev/shm
+                name: dshm
+          volumes:
+            - emptyDir:
+                medium: Memory
+              name: dshm                
