@@ -369,6 +369,7 @@ spec:
                 requests:
                   cpu: 2
                   memory: 128Mi
+    
     Worker:
       replicas: 2
       template:
