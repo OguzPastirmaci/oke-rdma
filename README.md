@@ -327,30 +327,45 @@ spec:
       template:
           spec:
             initContainers:
-            - name: node-ordering
+            - name: node-ordering-by-rack
               image: oguzpastirmaci/node-ordering-by-rack:init-mpijob-v1
               volumeMounts:
-              - name: workdir
+              - name: node-ordering-by-rack
                 mountPath: "/node-ordering-by-rack"
-              - mountPath: /etc/mpi
-                name: mpi-job-config
-              - mountPath: /root/.ssh
-                name: ssh-auth
+              - name: mpi-job-config
+                mountPath: /etc/mpi
+              - name: ssh-auth
+                mountPath: /root/.ssh
             volumes:
-            - name: workdir
+            - name: node-ordering-by-rack
               emptyDir: {}    
             containers:
             - image: oguzpastirmaci/nccl-tests:cuda
-              name: nccl
+              name: nccl-tests
               volumeMounts:
-              - name: workdir
+              - name: node-ordering-by-rack
                 mountPath: "/node-ordering-by-rack"
               env:
               - name: OMPI_ALLOW_RUN_AS_ROOT
                 value: "1"
               - name: OMPI_ALLOW_RUN_AS_ROOT_CONFIRM
-                value: "1"
-              command: ['sleep', '86400']
+                value: "1"           
+              #command: ['sleep', '86400']
+              command: ["/bin/bash", "-c"]
+              args: ["mpirun \
+                    --bind-to numa \
+                    --hostfile /node-ordering-by-rack/ordered_hostfile \
+                    --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
+                    -x HCOLL_ENABLE_MCAST_ALL=0 \
+                    -x coll_hcoll_enable=0 \
+                    -x NCCL_IB_HCA=mlx5 \
+                    -x NCCL_IB_GID_INDEX=3 \
+                    -x NCCL_IB_QPS_PER_CONNECTION=4 \
+                    -x NCCL_IB_TC=41 \
+                    -x NCCL_IB_SL=0 \
+                    /opt/nccl_tests/build/all_reduce_perf -b1G -e10G -i$((1024*1024*1024*9)) -g 1
+                    "]
+
               resources:
                 requests:
                   cpu: 2
@@ -376,7 +391,7 @@ spec:
                 nvidia.com/rdma_sriov: 16
               limits:
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16
+                nvidia.com/rdma_sriov: 16                
 ```                
 
 The initial pull of the container will take long. Wait until you see all pods' status as `Running`.
