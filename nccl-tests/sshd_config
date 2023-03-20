@@ -1,3 +1,0 @@
-PidFile /home/nccl/sshd.pid
-HostKey /home/nccl/.ssh/id_rsa
-StrictModes no
