@@ -108,7 +108,7 @@ kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} ku
 ```
 
 ### 4 - Install Fabric Manager on the GPU nodes
-It seems like Fabric Manager installation via GPU Operator sometimes fails ([see the issue](https://github.com/NVIDIA/gpu-operator/issues/356) in the GPU Operator repo, I had the same thing).
+It seems like Fabric Manager installation via GPU Operator sometimes fails ([see the issue](https://github.com/NVIDIA/gpu-operator/issues/356) in the GPU Operator repo.
 
 The safe path is to install Fabric Manager on the hosts.
 
