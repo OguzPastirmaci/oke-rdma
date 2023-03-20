@@ -390,7 +390,14 @@ spec:
                 nvidia.com/rdma_sriov: 16
               limits:
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16                
+                nvidia.com/rdma_sriov: 16
+            volumeMounts:
+              - mountPath: /dev/shm
+                name: dshm
+          volumes:
+            - emptyDir:
+                medium: Memory
+              name: dshm                
 ```                
 
 The initial pull of the container will take long.
