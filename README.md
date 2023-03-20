@@ -365,7 +365,6 @@ spec:
                     -x NCCL_IB_SL=0 \
                     /opt/nccl_tests/build/all_reduce_perf -b1G -e10G -i$((1024*1024*1024*9)) -g 1
                     "]
-
               resources:
                 requests:
                   cpu: 2
