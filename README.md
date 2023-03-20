@@ -386,7 +386,7 @@ spec:
             resources:
               requests:
                 cpu: 100
-                memory: 1500Gi
+                memory: 750Gi
                 nvidia.com/gpu: 8
                 nvidia.com/rdma_sriov: 16
               limits:
