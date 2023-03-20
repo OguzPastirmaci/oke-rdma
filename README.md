@@ -395,10 +395,15 @@ spec:
 
 The initial pull of the container will take long.
 
-The init container will wait until all worker pods are running. You can check the logs of the init container by running `kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name) -c node-ordering-by-rack`.
+The init container will wait until all worker pods are running. You can check the logs of the init container by running:
+
+```sh
+kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name) -c node-ordering-by-rack
+```
 
 ```sh
 kubectl logs -f  $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name) -c node-ordering-by-rack
+
 Mon Mar 20 20:19:04 UTC 2023 -- Waiting for all worker pods to be ready
 ...
 Mon Mar 20 20:19:59 UTC 2023 -- Waiting for all worker pods to be ready
@@ -406,7 +411,11 @@ Mon Mar 20 20:20:04 UTC 2023 -- Waiting for all worker pods to be ready
 Mon Mar 20 20:20:05 UTC 2023 -- All worker pods are ready
 ```
 
-Once the init container has finished running, you can check the results of the NCCL test by running `kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)`.
+Once the init container has finished running, you can check the results of the NCCL test by running:
+
+```sh
+kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)
+```
 
 ```sh
 kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)
