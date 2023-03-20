@@ -326,34 +326,31 @@ spec:
       replicas: 1
       template:
           spec:
-            #initContainers:
-            #- image: oguzpastirmaci/nccl-tests:cuda
-            #  name: init
-            #  command: ["sh", "-c", "sleep 5"]
+            initContainers:
+            - name: node-ordering
+              image: oguzpastirmaci/node-ordering-by-rack:init-mpijob-v1
+              volumeMounts:
+              - name: workdir
+                mountPath: "/node-ordering-by-rack"
+              - mountPath: /etc/mpi
+                name: mpi-job-config
+              - mountPath: /root/.ssh
+                name: ssh-auth
+            volumes:
+            - name: workdir
+              emptyDir: {}    
             containers:
             - image: oguzpastirmaci/nccl-tests:cuda
               name: nccl
+              volumeMounts:
+              - name: workdir
+                mountPath: "/node-ordering-by-rack"
               env:
               - name: OMPI_ALLOW_RUN_AS_ROOT
                 value: "1"
               - name: OMPI_ALLOW_RUN_AS_ROOT_CONFIRM
                 value: "1"
-              #command: ['sleep', '86400']
-              command: ["/bin/bash", "-c"]
-              args: ["mpirun \
-                    --bind-to numa \
-                    --mca pml ob1 --mca btl tcp,self --mca btl_tcp_if_include eth0 \
-                    -x HCOLL_ENABLE_MCAST_ALL=0 \
-                    -x coll_hcoll_enable=0 \
-                    -x NCCL_DEBUG=WARN \
-                    -x NCCL_IB_SL=0 \
-                    -x NCCL_IB_TC=41 \
-                    -x NCCL_IB_QPS_PER_CONNECTION=4 \
-                    -x NCCL_IB_GID_INDEX=3 \
-                    -x NCCL_IB_HCA=mlx5 \
-                    /opt/nccl_tests/build/all_reduce_perf -b1G -e10G -i$((1024*1024*1024*9)) -g 1
-                    "]
-
+              command: ['sleep', '86400']
               resources:
                 requests:
                   cpu: 2
@@ -377,11 +374,9 @@ spec:
                 memory: 1500Gi
                 nvidia.com/gpu: 8
                 nvidia.com/rdma_sriov: 16
-                #hugepages-2Mi: 1Gi
               limits:
                 nvidia.com/gpu: 8
                 nvidia.com/rdma_sriov: 16
-                #hugepages-2Mi: 1Gi
 ```                
 
 The initial pull of the container will take long. Wait until you see all pods' status as `Running`.
