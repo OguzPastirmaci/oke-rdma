@@ -1,7 +1,5 @@
 # OKE with RDMA VFs
 
-Below instructions are based on the image `oke-ubuntu-20.04-x86_64-kix-202303110447`.
-
 ### 1 - Deploy an OKE cluster with a CN pool
 Use the Terraform template [oke.tf](https://github.com/OguzPastirmaci/oke-rdma/blob/main/oke.tf) to deploy a new cluster in KIX. It will have a regular node pool, and a CN pool with 2 nodes.
 
