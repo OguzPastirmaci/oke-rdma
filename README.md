@@ -144,7 +144,7 @@ helm repo update
 
 Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one here. You will get a permission issue if you use the official one.
 
-`sriov-cni-daemonset.yaml`.
+`sriov-cni-daemonset.yaml`
 
 ```yaml
 ---
@@ -206,7 +206,7 @@ kubectl apply -f sriov-cni-daemonset.yaml
 
 ### 10 - Deploy Network Operator
 
-`network-operator-values.yaml`.
+`network-operator-values.yaml`
 
 ```yaml
 deployCR: true
