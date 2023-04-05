@@ -121,6 +121,10 @@ The TF template will also deploy a bastion. Once all GPU nodes are up, use the b
 
 This is a fix needed until we have a new image. If you don't change it, VFs will get duplicate MAC addresses.
 
+```
+sudo sed -i 's/MACAddressPolicy=persistent/MACAddressPolicy=none/g' /usr/lib/systemd/network/99-default.link
+```
+
 ### 6 - Configure the VF interfaces
 Once the GPU nodes are back, you will see VF interfaces named `rdma0v0..rdma15v0`.
 
