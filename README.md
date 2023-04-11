@@ -125,27 +125,20 @@ This is a fix needed until we have a new image. If you don't change it, VFs will
 sudo sed -i 's/MACAddressPolicy=persistent/MACAddressPolicy=none/g' /usr/lib/systemd/network/99-default.link
 ```
 
-### 6 - Configure the VF interfaces
-Once the GPU nodes are back, you will see VF interfaces named `rdma0v0..rdma15v0`.
-
-`v0` ones are the VF interfaces. Create new IP configs for them in `/etc/network/interfaces.d` (pick some IPs that are not duplicate), and `ifup` the interfaces.
-
-You should see IPs assigned to the VF interfaces now. Try pinging them from the other GPU node to make sure they work. It takes about 10 minutes for new VFs to authenticate after the previous step, and the reboot should give them enought time.
-
-### 7 - Uncordon the GPU nodes
+### 6 - Uncordon the GPU nodes
 
 ```sh
 kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl uncordon {}
 ```
 
-### 8 - Add Helm repos for Network Operator and GPU Operator
+### 7 - Add Helm repos for Network Operator and GPU Operator
 ```sh
 helm repo add mellanox https://mellanox.github.io/network-operator
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 helm repo update
 ```
 
-### 9 - Deploy Network Operator
+### 8 - Deploy Network Operator
 
 `network-operator-values.yaml`
 
@@ -190,7 +183,7 @@ helm install --wait \
 
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
 
-### 10 - Deploy SR-IOV CNI
+### 9 - Deploy SR-IOV CNI
 
 Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one here. You will get a permission issue if you use the official one.
 
@@ -255,7 +248,7 @@ kubectl apply -f sriov-cni-daemonset.yaml
 ```
 
 
-### 11 - Create Network Attachment Definition
+### 10 - Create Network Attachment Definition
 
 `network-attachment-definition.yaml`
 
@@ -293,7 +286,7 @@ spec:
 kubectl apply -f network-attachment-definition.yaml
 ```
 
-### 12 - Deploy GPU Operator
+### 11 - Deploy GPU Operator
 ```sh
 helm install --wait \
 -n gpu-operator --create-namespace \
@@ -304,12 +297,12 @@ gpu-operator nvidia/gpu-operator --version v22.9.2 \
 
 Wait until all network operator pods are running with `kubectl get pods -n gpu-operator`.
 
-### 13 - Deploy MPI Operator
+### 12 - Deploy MPI Operator
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/master/deploy/v2beta1/mpi-operator.yaml
 ```
 
-### 14 - Run NCCL test
+### 13 - Run NCCL test
 
 Run the test with `kubectl apply -f nccl-test.yaml`.
 
