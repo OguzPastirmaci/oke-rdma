@@ -105,7 +105,7 @@ We will reboot the GPU nodes in the next steps, drain them before rebooting.
 kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl drain --ignore-daemonsets {}
 ```
 
-### 4 - Install Fabric Manager on the GPU nodes
+### 4 - Install Fabric Manager on the GPU nodes (optional if you'll deploy it with the GPU Operator)
 It seems like Fabric Manager installation via GPU Operator sometimes fails ([see the issue](https://github.com/NVIDIA/gpu-operator/issues/356) in the GPU Operator repo.
 
 The safe path is to install Fabric Manager on the hosts.
