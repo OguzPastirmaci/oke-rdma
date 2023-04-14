@@ -1,6 +1,6 @@
 # OKE with RDMA VFs
 
-### 1 - Deploy an OKE cluster with a CN pool
+### Deploy an OKE cluster with a CN pool
 Use the Terraform template [oke.tf](https://github.com/OguzPastirmaci/oke-rdma/blob/main/oke.tf) to deploy a new cluster in KIX. It will have a regular node pool, and a CN pool with 2 nodes.
 
 ```sh
@@ -85,7 +85,7 @@ provider "oci" {
 ```
 
 
-### 2 - Wait until you see all nodes in the cluster
+### Wait until you see all nodes in the cluster
 
 ```sh
 kubectl get nodes
@@ -98,14 +98,14 @@ NAME           STATUS     ROLES    AGE     VERSION
 10.0.96.81     Ready      node     2d23h   v1.25.6
 ```
 
-### 3 - Drain the GPU nodes
+### Drain the GPU nodes
 We will reboot the GPU nodes in the next steps, drain them before rebooting.
 
 ```sh
 kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl drain --ignore-daemonsets {}
 ```
 
-### 4 - Install Fabric Manager on the GPU nodes (optional if you'll deploy it with the GPU Operator)
+### Install Fabric Manager on the GPU nodes (optional if you'll deploy it with the GPU Operator)
 It seems like Fabric Manager installation via GPU Operator sometimes fails ([see the issue](https://github.com/NVIDIA/gpu-operator/issues/356) in the GPU Operator repo.
 
 The safe path is to install Fabric Manager on the hosts.
@@ -116,7 +116,7 @@ sudo apt-get install cuda-drivers-fabricmanager-515=515.86.01-1 -y
 sudo systemctl --now enable nvidia-fabricmanager
 ```
 
-### 5 - Change MACAddressPolicy and reboot the hosts
+### Change MACAddressPolicy and reboot the hosts
 The TF template will also deploy a bastion. Once all GPU nodes are up, use the bastion to SSH into the CN nodes and change `MACAddressPolicy=persistent` to `MACAddressPolicy=none` in `/usr/lib/systemd/network/99-default.link`, and reboot the nodes.
 
 This is a fix needed until we have a new image. If you don't change it, VFs will get duplicate MAC addresses.
@@ -125,20 +125,25 @@ This is a fix needed until we have a new image. If you don't change it, VFs will
 sudo sed -i 's/MACAddressPolicy=persistent/MACAddressPolicy=none/g' /usr/lib/systemd/network/99-default.link
 ```
 
-### 6 - Uncordon the GPU nodes
+### Uncordon the GPU nodes
 
 ```sh
 kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl uncordon {}
 ```
 
-### 7 - Add Helm repos for Network Operator and GPU Operator
+### Remove the GPU taint from the nodes so the daemonsets can be scheduled
+```sh
+kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl taint nodes {} nvidia.com/gpu=present:NoSchedule-
+```
+
+### Add Helm repos for Network Operator and GPU Operator
 ```sh
 helm repo add mellanox https://mellanox.github.io/network-operator
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 helm repo update
 ```
 
-### 8 - Deploy Network Operator
+### Deploy Network Operator
 
 `network-operator-values.yaml`
 
@@ -183,7 +188,7 @@ helm install --wait \
 
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
 
-### 9 - Deploy SR-IOV CNI
+### Deploy SR-IOV CNI
 
 Important: Do NOT use the manifest from the official SR-IOV CNI repo. Use the one here. You will get a permission issue if you use the official one.
 
@@ -248,7 +253,7 @@ kubectl apply -f sriov-cni-daemonset.yaml
 ```
 
 
-### 10 - Create Network Attachment Definition
+### Create Network Attachment Definition
 
 `network-attachment-definition.yaml`
 
@@ -286,7 +291,7 @@ spec:
 kubectl apply -f network-attachment-definition.yaml
 ```
 
-### 11 - Deploy GPU Operator
+### Deploy GPU Operator
 ```sh
 helm install --wait \
 -n gpu-operator --create-namespace \
@@ -297,12 +302,12 @@ gpu-operator nvidia/gpu-operator --version v23.3.1 \
 
 Wait until all network operator pods are running with `kubectl get pods -n gpu-operator`.
 
-### 12 - Deploy MPI Operator
+### Deploy MPI Operator
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/master/deploy/v2beta1/mpi-operator.yaml
 ```
 
-### 13 - Run NCCL test
+### Run NCCL test
 
 Run the test with `kubectl apply -f nccl-test.yaml`.
 
