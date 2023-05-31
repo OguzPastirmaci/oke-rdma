@@ -10,7 +10,7 @@ nvPeerDriver:
   deploy: false
 
 nfd:
-  enabled: true
+  enabled: false
 
 rdmaSharedDevicePlugin:
   deploy: false
