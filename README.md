@@ -98,12 +98,13 @@ kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/rdma-cni
 `network-attachment-definition.yaml`
 
 ```yaml
-apiVersion: "k8s.cni.cncf.io/v1"
+apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
-  name: sriov-net
   annotations:
     k8s.v1.cni.cncf.io/resourceName: nvidia.com/rdma_sriov
+  name: sriov-net
+  namespace: default
 spec:
   config: |-
     {
@@ -111,6 +112,7 @@ spec:
       "name": "sriov-rdma-net",
       "plugins": [
         {
+          "name": "sriov-rdma-net",
           "type": "sriov",
           "ipam": {
             "type": "whereabouts",
@@ -120,6 +122,17 @@ spec:
             "exclude": [],
             "log_file": "/var/log/whereabouts.log",
             "log_level": "info"
+          }
+        },
+        {
+          "name": "sriov-rdma-net",
+          "type": "tuning",
+          "mtu": 4220,
+          "sysctl": {
+            "net.ipv4.conf.all.arp_announce": "2",
+            "net.ipv4.conf.all.arp_ignore": "1",
+            "net.ipv4.conf.all.rp_filter": "2",
+            "net.ipv4.conf.all.accept_local": "1"
           }
         },
         { "type": "rdma" }
