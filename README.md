@@ -161,9 +161,9 @@ spec:
         spec:
           containers:
           - image: oguzpastirmaci/nccl-tests:cuda
-            #securityContext:
-              #capabilities:
-                #add: [ "IPC_LOCK" ]
+            securityContext:
+              capabilities:
+                add: [ "IPC_LOCK" ]
             name: nccl
             resources:
               requests:
