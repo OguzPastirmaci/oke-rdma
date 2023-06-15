@@ -36,13 +36,13 @@ helm repo update
 ### Deploy GPU Operator
 ```sh
 helm install --wait \
- -n gpu-operator --create-namespace \
- gpu-operator nvidia/gpu-operator \
- --version v23.3.2 \
- --set operator.defaultRuntime=crio \
- --set driver.enabled=false \
- --set driver.rdma.enabled=true \
- --set driver.rdma.useHostMofed=true
+  -n gpu-operator --create-namespace \
+  gpu-operator nvidia/gpu-operator \
+  --version v23.3.2 \
+  --set operator.defaultRuntime=crio \
+  --set driver.enabled=false \
+  --set driver.rdma.enabled=true \
+  --set driver.rdma.useHostMofed=true
 ```
 
 Wait until all network operator pods are running with `kubectl get pods -n gpu-operator`.
