@@ -55,7 +55,7 @@ helm install --wait \
   --set rdmaSharedDevicePlugin.deploy=false \
   --set sriovDevicePlugin.deploy=true \
   --set nvPeerDriver.deploy=true \
-  --set-json sriovDevicePlugin.resources='[{"name": "rdma_sriov", "drivers": ["mlx5_core"], "devices": ["101a"], "isRdma": [true]}]'
+  --set-json sriovDevicePlugin.resources='[{"name": "sriov_rdma_vf", "drivers": ["mlx5_core"], "devices": ["101a"], "isRdma": [true]}]'
 ```
 
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
@@ -166,10 +166,10 @@ spec:
                 cpu: 100
                 memory: 750Gi
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16
+                nvidia.com/sriov_rdma_vf: 16
               limits:
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16
+                nvidia.com/sriov_rdma_vf: 16
             volumeMounts:
               - mountPath: /dev/shm
                 name: dshm

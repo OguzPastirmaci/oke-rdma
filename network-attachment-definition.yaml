@@ -2,7 +2,7 @@ apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
   annotations:
-    k8s.v1.cni.cncf.io/resourceName: nvidia.com/rdma_sriov
+    k8s.v1.cni.cncf.io/resourceName: nvidia.com/sriov_rdma_vf
   name: sriov-net
   namespace: default
 spec:
