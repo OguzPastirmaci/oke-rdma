@@ -229,8 +229,6 @@ kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a
 ```
 
 ```sh
-kubectl logs -f  $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name) -c node-ordering-by-rack
-
 Mon Mar 20 20:19:04 UTC 2023 -- Waiting for all worker pods to be ready
 ...
 Mon Mar 20 20:19:59 UTC 2023 -- Waiting for all worker pods to be ready
@@ -245,8 +243,6 @@ kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a
 ```
 
 ```sh
-kubectl logs -f $(kubectl get pods -l training.kubeflow.org/job-name=nccl-test-a100,training.kubeflow.org/job-role=launcher -o name)
-
 Warning: Permanently added 'nccl-test-a100-worker-0.nccl-test-a100-worker.default.svc,10.244.0.253' (ECDSA) to the list of known hosts.
 Warning: Permanently added 'nccl-test-a100-worker-1.nccl-test-a100-worker.default.svc,10.244.1.9' (ECDSA) to the list of known hosts.
 # nThread 1 nGpus 1 minBytes 1073741824 maxBytes 10737418240 step: 9663676416(bytes) warmup iters: 5 iters: 20 agg iters: 1 validation: 1 graph: 0
