@@ -73,10 +73,10 @@ spec:
                 cpu: 100
                 memory: 750Gi
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16
+                nvidia.com/sriov_rdma_vf: 16
               limits:
                 nvidia.com/gpu: 8
-                nvidia.com/rdma_sriov: 16
+                nvidia.com/sriov_rdma_vf: 16
             volumeMounts:
               - mountPath: /dev/shm
                 name: dshm
