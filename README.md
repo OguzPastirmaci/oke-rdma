@@ -28,10 +28,13 @@ helm repo update
 ### Deploy GPU Operator
 ```sh
 helm install --wait \
--n gpu-operator --create-namespace \
-gpu-operator nvidia/gpu-operator --version v23.3.1 \
---set operator.defaultRuntime=crio --set driver.version="510.108.03" \
---set driver.rdma.enabled=true --set driver.rdma.useHostMofed=true
+ -n gpu-operator --create-namespace \
+ gpu-operator nvidia/gpu-operator \
+ --version v23.3.2 \
+ --set operator.defaultRuntime=crio \
+ --set driver.enabled=false \
+ --set driver.rdma.enabled=true \
+ --set driver.rdma.useHostMofed=true
 ```
 
 Wait until all network operator pods are running with `kubectl get pods -n gpu-operator`.
@@ -39,44 +42,16 @@ Wait until all network operator pods are running with `kubectl get pods -n gpu-o
 
 ### Deploy Network Operator
 
-`network-operator-values.yaml`
-
-```yaml
-deployCR: true
-
-psp:
-  enabled: false
-
-ofedDriver:
-  deploy: false
-
-nvPeerDriver:
-  deploy: false
-
-nfd:
-  enabled: false
-
-rdmaSharedDevicePlugin:
-  deploy: false
-
-sriovNetworkOperator:
-  enabled: false
-
-sriovDevicePlugin:
-  deploy: true
-  resources:
-      - name: rdma_sriov
-        drivers: [mlx5_core]
-        devices: [101a]
-        isRdma: true
-```      
-
-
 ```sh
 helm install --wait \
   -n network-operator --create-namespace \
-  -f network-operator-values.yaml \
-  network-operator mellanox/network-operator
+  network-operator mellanox/network-operator \
+  --set deployCR=true \
+  --set nfd.enabled=false \
+  --set rdmaSharedDevicePlugin.deploy=false \
+  --set sriovDevicePlugin.deploy=true \
+  --set nvPeerDriver.deploy=true \
+  --set-json sriovDevicePlugin.resources='[{"name": "rdma_sriov", "drivers": ["mlx5_core"], "devices": ["101a"], "isRdma": [true]}]'
 ```
 
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
