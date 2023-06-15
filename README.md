@@ -53,8 +53,8 @@ helm install --wait \
   --set deployCR=true \
   --set nfd.enabled=false \
   --set rdmaSharedDevicePlugin.deploy=false \
-  --set sriovDevicePlugin.deploy=true \
   --set nvPeerDriver.deploy=true \
+  --set sriovDevicePlugin.deploy=true \
   --set-json sriovDevicePlugin.resources='[{"name": "sriov_rdma_vf", "drivers": ["mlx5_core"], "devices": ["101a"], "isRdma": [true]}]'
 ```
 
