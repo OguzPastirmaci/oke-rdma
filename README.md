@@ -15,10 +15,6 @@ NAME           STATUS     ROLES    AGE     VERSION
 10.0.96.81     Ready      node     2d23h   v1.25.6
 ```
 
-### Remove the GPU taint from the nodes so the daemonsets can be scheduled
-```sh
-kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl taint nodes {} nvidia.com/gpu=present:NoSchedule-
-```
 ### Get the latest Helm 3 version
 ```sh
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
