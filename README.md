@@ -19,6 +19,12 @@ NAME           STATUS     ROLES    AGE     VERSION
 ```sh
 kubectl get nodes --show-labels |grep BM.GPU | awk '{print $1}' | xargs -I {} kubectl taint nodes {} nvidia.com/gpu=present:NoSchedule-
 ```
+### Get the latest Helm 3 version
+```sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
 
 ### Add Helm repos for Network Operator and GPU Operator
 ```sh
