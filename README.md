@@ -1,5 +1,7 @@
 # OKE with RDMA VFs
 
+This guide assumes you're using an image that has the GPU drivers, OFED drivers, and OKE components pre-installed.
+
 ### Wait until you see all nodes in the cluster
 
 ```sh
