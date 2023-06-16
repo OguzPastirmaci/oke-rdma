@@ -14,9 +14,9 @@ spec:
         add: [ "IPC_LOCK" ]
     resources: 
       requests:
-        nvidia.com/rdma_sriov_vf: "16"
+        nvidia.com/sriov_rdma_vf: "16"
       limits:
-        nvidia.com/rdma_sriov_vf: "16"
+        nvidia.com/sriov_rdma_vf: "16"
     command:
     - sh
     - -c
@@ -40,9 +40,9 @@ spec:
         add: [ "IPC_LOCK" ]
     resources: 
       requests:
-        nvidia.com/rdma_sriov_vf: "16"
+        nvidia.com/sriov_rdma_vf: "16"
       limits:
-        nvidia.com/rdma_sriov_vf: "16"
+        nvidia.com/sriov_rdma_vf: "16"
     command:
     - sh
     - -c
