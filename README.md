@@ -1,6 +1,6 @@
 # OKE with RDMA VFs
 
-This guide assumes you're using an image that has the GPU drivers, OFED drivers, and OKE components pre-installed.
+This guide assumes you're using an Oracle Linux image that has the GPU drivers, OFED drivers, and OKE components pre-installed.
 
 ### Wait until you see all nodes in the cluster
 
@@ -37,6 +37,7 @@ helm install --wait \
   --version v23.3.2 \
   --set operator.defaultRuntime=crio \
   --set driver.enabled=false \
+  --set toolkit.version=v1.13.2-centos7 \
   --set driver.rdma.enabled=true \
   --set driver.rdma.useHostMofed=true
 ```

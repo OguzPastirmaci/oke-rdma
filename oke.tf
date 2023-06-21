@@ -45,8 +45,7 @@ module "oke" {
       description = "Self-managed Cluster Network", enabled = true,
       mode        = "cluster-network", size = 2, shape = "BM.GPU.B4.8", placement_ads = [1],
       secondary_vnics = {
-        # storage0 = { nic_index = 0 } # Pending instance config limits increase for hpc_limited_availability
-        storage1 = { nic_index = 1 }
+        weka = { nic_index = 1 }
       }
     }
   }
