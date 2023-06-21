@@ -44,8 +44,6 @@ module "oke" {
     cn0 = {
       description = "Self-managed Cluster Network", enabled = true,
       mode        = "cluster-network", size = 2, shape = "BM.GPU.B4.8", placement_ads = [1],
-      secondary_vnics = {
-        weka = { nic_index = 1 }
       }
     }
   }
