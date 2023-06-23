@@ -24,7 +24,6 @@ chmod 700 get_helm.sh
 
 ### Add Helm repos for Network Operator and GPU Operator
 ```sh
-helm repo add mellanox https://mellanox.github.io/network-operator
 helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
 helm repo update
 ```
@@ -50,7 +49,8 @@ Wait until all network operator pods are running with `kubectl get pods -n gpu-o
 ```sh
 helm install --wait \
   -n network-operator --create-namespace \
-  network-operator mellanox/network-operator \
+  network-operator nvidia/network-operator \
+  --version v23.5.0 \
   --set deployCR=true \
   --set nfd.enabled=false \
   --set rdmaSharedDevicePlugin.deploy=false \
