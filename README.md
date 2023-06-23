@@ -119,7 +119,7 @@ spec:
             - name: node-ordering-by-rack
               emptyDir: {}    
             containers:
-            - image: oguzpastirmaci/nccl-tests:cuda
+            - image: oguzpastirmaci/nccl-tests:cuda-11.7.1
               name: nccl-tests
               volumeMounts:
               - name: node-ordering-by-rack
@@ -157,7 +157,7 @@ spec:
             k8s.v1.cni.cncf.io/networks: sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net, sriov-net
         spec:
           containers:
-          - image: oguzpastirmaci/nccl-tests:cuda
+          - image: oguzpastirmaci/nccl-tests:cuda-11.7.1
             securityContext:
               capabilities:
                 add: [ "IPC_LOCK" ]
