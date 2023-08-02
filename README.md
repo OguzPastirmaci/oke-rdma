@@ -82,7 +82,7 @@ kubectl apply -f https://raw.githubusercontent.com/OguzPastirmaci/oke-rdma/main/
 
 ### Deploy MPI Operator
 ```sh
-kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/master/deploy/v2beta1/mpi-operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.4.0/deploy/v2beta1/mpi-operator.yaml
 ```
 
 ### Run NCCL test
