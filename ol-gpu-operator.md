@@ -1,4 +1,6 @@
-**Important note:** You will need an image that does not have the GPU driver pre-installed for the steps below. If you already have the GPU driver installed on the nodes, the deployment will fail because of how the GPU Operator is designed to work.
+**Important note:** You will need an Oracle Linux image that does not have the GPU driver pre-installed for the steps below. If you already have the GPU driver installed on the nodes, the deployment will fail because of how the GPU Operator is designed to work.
+
+You also need to use an OS image that has the Red Hat Compatible (RHCK) kernel.
 
 ### Change ID and VERSION_ID values in /etc/os-release on the GPU nodes
 
