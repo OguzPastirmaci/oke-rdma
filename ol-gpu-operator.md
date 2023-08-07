@@ -8,6 +8,12 @@ This is the `Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625` image [here](https://
 
 ### Wait until you see all nodes in the cluster
 
+You will need to have at least 1 non-GPU node. Or if you only have GPU nodes, run the below command to remove the GPU taint so non-GPU workloads can be scheduled on the GPU nodes:
+
+```
+kubectl get nodes --show-labels |grep GPU | awk '{print $1}' | xargs -I {} kubectl taint nodes {} nvidia.com/gpu=present:NoSchedule-
+```
+
 ```sh
 kubectl get nodes
 
