@@ -69,7 +69,21 @@ kubectl create configmap repo-config -n gpu-operator --from-file=./ol7.repo
 
 ### Use the configmap you created with the GPU Operator deployment command
 
-You can choose any driver version in the below command (`--set driver.version`) for the GPU Operator version (`--version`) listed [here](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#gpu-operator-component-matrix) for the GPU Operator release.
+You can choose any driver version in the below command  with `--set driver.version` based on the GPU Operator version that you're deploying with `--version`listed [here](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#gpu-operator-component-matrix).
+
+For example for the 23.3.2 release, here are the GPU driver versions that you can use:
+```
+535.54.03
+525.125.06
+525.105.17
+515.86.01
+510.108.03
+470.199.02
+470.161.03
+450.248.02
+450.216.04
+```
+If you don't specify a version with `--set driver.version`, the default GPU driver version for the GPU Operator release will be deployed (e.g. `525.105.17` for GPU Operator `23.3.2`.
 
 ```
 helm install --wait \
