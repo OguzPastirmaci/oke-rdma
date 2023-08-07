@@ -83,7 +83,7 @@ For example for the `23.3.2` GPU Operator release, here are the GPU driver versi
 450.248.02
 450.216.04
 ```
-If you don't specify a version with `--set driver.version`, the default GPU driver version for the GPU Operator release will be deployed (e.g. `525.105.17` for GPU Operator `23.3.2`.
+If you don't specify a version with `--set driver.version`, the default GPU driver version for the GPU Operator release will be deployed (e.g. `525.105.17` for GPU Operator `23.3.2`.)
 
 ```
 helm install --wait \
