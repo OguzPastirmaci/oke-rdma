@@ -6,6 +6,8 @@ You can import the image [from this link](https://objectstorage.us-phoenix-1.ora
 
 This is the `Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625` image [here](https://docs.oracle.com/en-us/iaas/images/image/9042e7ef-606b-4ab5-b83b-d811963f193e/), the only difference is that the above image has RHCK kernel instead of UEK.
 
+If you want to create your own custom image, you can use the instructions in [this link.](https://github.com/OguzPastirmaci/misc/blob/master/change-ol-kernel-to-rhck.md)
+
 ### Wait until you see all nodes in the cluster
 
 Ideally, you have at least 1 non-GPU node. If you you only have GPU nodes, run the below command to remove the GPU taint so non-GPU workloads can be scheduled on the GPU nodes:
