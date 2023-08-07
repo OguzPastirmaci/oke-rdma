@@ -9,6 +9,8 @@ This is the `Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625` image [here](https://
 
 ### Change ID and VERSION_ID values in /etc/os-release on all nodes in the cluster (or to be more precise, on the nodes that NFD pods will be running)
 
+You can do this from cloud-init or manually on the nodes. For testing purposes, you can change it on all nodes. There's an [open issue](https://github.com/NVIDIA/gpu-operator/issues/562) about this and it will be fixed in the next GPU Operator release so you won't need to edit the os-release file on non-GPU nodes.
+
 ```
 sudo sed -i 's/ID="ol"/ID="centos"/g' /etc/os-release
 
