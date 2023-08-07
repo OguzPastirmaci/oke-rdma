@@ -2,7 +2,7 @@
 
 You also need to use an OS image that has the Red Hat Compatible (RHCK) kernel.
 
-Example image that you can import from [this link](https://objectstorage.us-phoenix-1.oraclecloud.com/p/ZDHMTkZfJUNzrJrJ9o8pedJ1dwlBzH2GaUqvuKL9xMrDhV_Y_AHn-pLI9YuzZ-my/n/hpc_limited_availability/b/oke-images/o/RHCK-Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625)
+You can import the image [from this link](https://objectstorage.us-phoenix-1.oraclecloud.com/p/ZDHMTkZfJUNzrJrJ9o8pedJ1dwlBzH2GaUqvuKL9xMrDhV_Y_AHn-pLI9YuzZ-my/n/hpc_limited_availability/b/oke-images/o/RHCK-Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625) as an example.
 
 This is the `Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625` image [here](https://docs.oracle.com/en-us/iaas/images/image/9042e7ef-606b-4ab5-b83b-d811963f193e/), the only difference is that the above image has RHCK kernel instead of UEK.
 
