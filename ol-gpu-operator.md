@@ -1,3 +1,5 @@
+**Important note:** You will need an image that does not have the GPU driver pre-installed for the steps below. If you already have the GPU driver installed on the nodes, the deployment will fail because of how the GPU Operator is designed to work.
+
 ### Change ID and VERSION_ID values in /etc/os-release
 
 ```
