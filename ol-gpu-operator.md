@@ -2,7 +2,7 @@
 
 You also need to use an OS image that has the Red Hat Compatible (RHCK) kernel.
 
-### Change ID and VERSION_ID values in /etc/os-release on the GPU nodes
+### Change ID and VERSION_ID values in /etc/os-release on all nodes in the cluster (or to be more precise, on the nodes that NFD pods will be running)
 
 ```
 sudo sed -i 's/ID="ol"/ID="centos"/g' /etc/os-release
