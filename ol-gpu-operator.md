@@ -6,6 +6,31 @@ You can import the image [from this link](https://objectstorage.us-phoenix-1.ora
 
 This is the `Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625` image [here](https://docs.oracle.com/en-us/iaas/images/image/9042e7ef-606b-4ab5-b83b-d811963f193e/), the only difference is that the above image has RHCK kernel instead of UEK.
 
+### Wait until you see all nodes in the cluster
+
+```sh
+kubectl get nodes
+
+NAME           STATUS     ROLES    AGE     VERSION
+10.0.103.73    Ready      <none>   2d23h   v1.25.6
+10.0.127.206   Ready      node     2d3h    v1.25.6
+10.0.127.32    Ready      node     2d3h    v1.25.6
+10.0.83.93     Ready      <none>   2d23h   v1.25.6
+10.0.96.81     Ready      node     2d23h   v1.25.6
+```
+
+### Get the latest Helm 3 version
+```sh
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+chmod 700 get_helm.sh
+./get_helm.sh
+```
+
+### Add Helm repos for Network Operator and GPU Operator
+```sh
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia
+helm repo update
+```
 
 ### Change ID and VERSION_ID values in /etc/os-release on all nodes in the cluster (or to be more precise, on the nodes that NFD pods will be running)
 
