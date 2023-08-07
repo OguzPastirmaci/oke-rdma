@@ -71,7 +71,7 @@ kubectl create configmap repo-config -n gpu-operator --from-file=./ol7.repo
 
 You can choose any driver version in the below command  with `--set driver.version` based on the GPU Operator version that you're deploying with `--version`listed [here](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#gpu-operator-component-matrix).
 
-For example for the 23.3.2 release, here are the GPU driver versions that you can use:
+For example for the `23.3.2` GPU Operator release, here are the GPU driver versions that you can use:
 ```
 535.54.03
 525.125.06
