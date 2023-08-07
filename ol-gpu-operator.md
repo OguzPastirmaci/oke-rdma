@@ -1,6 +1,11 @@
-**Important note:** You will need an Oracle Linux image that does not have the GPU driver pre-installed for the steps below. If you already have the GPU driver installed on the nodes, the deployment will fail because of how the GPU Operator is designed to work.
+**Important note:** You will need an Oracle Linux 7 image that does not have the GPU driver pre-installed for the steps below. If you already have the GPU driver installed on the nodes, the deployment will fail because of how the GPU Operator is designed to work.
 
 You also need to use an OS image that has the Red Hat Compatible (RHCK) kernel.
+
+Example image that you can import from [this link](https://objectstorage.us-phoenix-1.oraclecloud.com/p/ZDHMTkZfJUNzrJrJ9o8pedJ1dwlBzH2GaUqvuKL9xMrDhV_Y_AHn-pLI9YuzZ-my/n/hpc_limited_availability/b/oke-images/o/RHCK-Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625)
+
+This is the `Oracle-Linux-7.9-2023.05.24-0-OKE-1.26.2-625` image [here](https://docs.oracle.com/en-us/iaas/images/image/9042e7ef-606b-4ab5-b83b-d811963f193e/), the only difference is that the above image has RHCK kernel instead of UEK.
+
 
 ### Change ID and VERSION_ID values in /etc/os-release on all nodes in the cluster (or to be more precise, on the nodes that NFD pods will be running)
 
