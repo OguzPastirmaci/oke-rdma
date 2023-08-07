@@ -21,6 +21,12 @@ gpgcheck=0
 enabled=1
 ```
 
+### Create the gpu-operator namespace
+
+```
+kubectl create ns gpu-operator
+```
+
 ### Create a Kubernetes configmap with the repo file from the previous step
 
 ```
