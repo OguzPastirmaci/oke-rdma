@@ -50,7 +50,7 @@ sudo sed -i 's/ID="ol"/ID="centos"/g' /etc/os-release
 sudo sed -i 's/VERSION_ID="7.9"/VERSION_ID="7"/g' /etc/os-release
 ```
 
-### Save the following as a file
+### Save the following as a file in your operator node (not on the Kubernetes nodes, save it on the node where you run the kubectl commands)
 
 Make sure the extension of the file is repo (e.g. `ol7.repo`)
 
