@@ -10,7 +10,7 @@ If you want to create your own custom image, you can use the instructions in [th
 
 ### Wait until you see all nodes in the cluster
 
-Ideally, you have at least 1 non-GPU node. If you you only have GPU nodes, run the below command to remove the GPU taint so non-GPU workloads can be scheduled on the GPU nodes:
+Ideally, you have at least 1 non-GPU node. If you only have GPU nodes, run the below command to remove the GPU taint so non-GPU workloads can be scheduled on the GPU nodes:
 
 ```
 kubectl get nodes --show-labels |grep GPU | awk '{print $1}' | xargs -I {} kubectl taint nodes {} nvidia.com/gpu=present:NoSchedule-
