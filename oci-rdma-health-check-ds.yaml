@@ -81,9 +81,8 @@ spec:
               kubectl label nodes ${NODE_NAME} oci.oraclecloud.com/oci_cn_auth_true="${authTrue}" --overwrite
               kubectl label nodes ${NODE_NAME} oci.oraclecloud.com/oci_cn_auth_false="${authFalse}" --overwrite
               authAll="false"
-              if ((authTrue > 0)) && ((authFalse == 0)); then authAll="true"; fi
+              if ((authTrue > 0)) && ((authFalse == 0)); then authAll="true" && kubectl taint nodes ${NODE_NAME} oci.oraclecloud.com/oci-rdma-health-check:NoSchedule-; fi
               kubectl label nodes ${NODE_NAME} oci.oraclecloud.com/oci_cn_auth_all="${authAll}" --overwrite
-              kubectl taint nodes ${NODE_NAME} oci.oraclecloud.com/oci-rdma-health-check:NoSchedule-
               sleep 60;
             done
           fi
