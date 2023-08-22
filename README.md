@@ -62,7 +62,7 @@ Use the container image you built in the `Build the GPU Operator driver containe
 
 Change the `driver.repository` and `driver.version` in the Helm command below.
 
-```sh
+```
 helm install --wait \
   -n gpu-operator --create-namespace \
   gpu-operator nvidia/gpu-operator \
