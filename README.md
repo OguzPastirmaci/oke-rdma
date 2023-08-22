@@ -1,6 +1,6 @@
 # OKE with RDMA VFs using GPU Operator and Network Operator
 
-This guide has the instructions for deploying an OKE cluster using A100 BM nodes with RDMA connectivity enabled.
+This guide has the instructions for deploying an OKE cluster using A100 BM nodes with RDMA connectivity enabled using the [GPU Operator](https://github.com/NVIDIA/gpu-operator) and [Network Operator](https://github.com/Mellanox/network-operator).
 
 You will need at least 2 worker pools. You will also need to use the correct OS images.
 
