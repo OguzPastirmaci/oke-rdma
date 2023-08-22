@@ -75,7 +75,7 @@ Wait until all network operator pods are running with `kubectl get pods -n gpu-o
 
 ### Deploy Network Operator
 
-```sh
+```
 helm install --wait \
   -n network-operator --create-namespace \
   network-operator nvidia/network-operator \
