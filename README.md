@@ -16,6 +16,11 @@ You can import the following images to your tenancy and use them.
 #### GPU nodes
 [OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-OKE-1.26.2-2023.07.14-2](https://objectstorage.ap-osaka-1.oraclecloud.com/p/2vF_fbV3IQbd4oUTbpUSSq605MNsuepd1WyUBF9TKQgw4m3rbi5WErjebdbdngSP/n/hpc_limited_availability/b/oke-images/o/OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-OKE-1.26.2-2023.07.14-2)
 
+### Deploy the cluster using the Terraform template
+You can find the template in the [terraform directory](./terraform/).
+
+Make sure to update the image IDs in the `worker pools` block.
+
 ### Wait until you see all nodes in the cluster
 
 ```sh
