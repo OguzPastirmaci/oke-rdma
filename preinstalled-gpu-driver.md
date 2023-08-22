@@ -1,20 +1,6 @@
-# OKE with RDMA VFs using GPU Operator and Network Operator
+# OKE with RDMA VFs
 
-This guide has the instructions for deploying an OKE cluster using A100 BM nodes with RDMA connectivity enabled.
-
-You will need at least 2 worker pools. You will also need to use the correct OS images.
-
-- A worker pool for running non-GPU pods. This pool can use any Oracle Linux 7 image with the Red Hat Compatible Kernel (RHCK). You can find the import link below. If you want to use your own image, you can find the instructions [here](https://github.com/OguzPastirmaci/misc/blob/master/change-ol-kernel-to-rhck.md) on how to change the kernel to RHCK.
-
-- A GPU worker pool for running GPU/RDMA pods. This pool requires you to use an image provided by the Oracle HPC team, you can find the import link below. This image included the OFED drivers and necessary packages configured for RDMA.
-
-You can import the following images to your tenancy and use them.
-
-#### Non-GPU nodes
-[RHCK-Oracle-Linux-7.9-2023.06.30-1-OKE-1.26.2-632](https://objectstorage.ap-osaka-1.oraclecloud.com/p/V2sD4Ckur6NfIHCga92zKpaPfDvCgyACHGQiUjf_fs6H2SQTmna1a-NI1bOMhRvN/n/hpc_limited_availability/b/oke-images/o/RHCK-Oracle-Linux-7.9-2023.06.30-1-OKE-1.26.2-632)
-
-#### GPU nodes
-[OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-OKE-1.26.2-2023.07.14-2](https://objectstorage.ap-osaka-1.oraclecloud.com/p/2vF_fbV3IQbd4oUTbpUSSq605MNsuepd1WyUBF9TKQgw4m3rbi5WErjebdbdngSP/n/hpc_limited_availability/b/oke-images/o/OracleLinux-7-RHCK-3.10.0-OFED-5.4-3.6.8.1-OKE-1.26.2-2023.07.14-2)
+This guide assumes you're using an Oracle Linux image that has the GPU drivers, OFED drivers, and OKE components pre-installed.
 
 ### Wait until you see all nodes in the cluster
 
@@ -28,16 +14,6 @@ NAME           STATUS     ROLES    AGE     VERSION
 10.0.83.93     Ready      <none>   2d23h   v1.25.6
 10.0.96.81     Ready      node     2d23h   v1.25.6
 ```
-
-### Deploy the OCI RDMA Health Check daemonset
-Deploying this daemonset is important. When a new node joins to the OKE cluster, it will report itself as ready. However, the RDMA network configuration of the nodes usually takes longer than the node joining the cluster. The health check daemonset checks the status of the RDMA interfaces, and removes the `oci.oraclecloud.com/oci-rdma-health-check` that is being added via cloud init.
-
-```
-kubectl apply -f https://raw.githubusercontent.com/OguzPastirmaci/oke-rdma/main/oci-rdma-health-check-ds.yaml
-```
-
-### Build the GPU Operator driver container image for Oracle Linux
-You can follow the instructions [here](./building-gpu-operator-driver-image.md) for building the GPU Operator driver container image.
 
 ### Get the latest Helm 3 version
 ```sh
@@ -53,19 +29,14 @@ helm repo update
 ```
 
 ### Deploy GPU Operator
-Use the container image you built in the `Build the GPU Operator driver container image for Oracle Linux` step above.
-
-Change the `driver.repository` and `driver.version` in the Helm command below.
-
 ```sh
 helm install --wait \
   -n gpu-operator --create-namespace \
   gpu-operator nvidia/gpu-operator \
   --version v23.3.2 \
   --set operator.defaultRuntime=crio \
-  --set driver.repository=<The repository that you pushed your image> \
-  --set driver.version=<The driver version in your pushed image. Only the version, don't add ol7.9 at the end> \
-  --set toolkit.version=v1.13.5-centos7 \
+  --set driver.enabled=false \
+  --set toolkit.version=v1.13.2-centos7 \
   --set driver.rdma.enabled=true \
   --set driver.rdma.useHostMofed=true
 ```
@@ -90,11 +61,24 @@ helm install --wait \
 
 Wait until all network operator pods are running with `kubectl get pods -n network-operator`.
 
+### Deploy SR-IOV CNI
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/openshift/sriov-cni/master/images/k8s-v1.16/sriov-cni-daemonset.yaml
+```
+
+### Deploy RDMA CNI
+
+```sh
+kubectl apply -f https://raw.githubusercontent.com/k8snetworkplumbingwg/rdma-cni/master/deployment/rdma-cni-daemonset.yaml
+```
+
 ### Create Network Attachment Definition
 
 ```sh
 kubectl apply -f https://raw.githubusercontent.com/OguzPastirmaci/oke-rdma/main/network-attachment-definition.yaml
 ```
+
 
 ### Deploy MPI Operator
 ```sh
